@@ -9,8 +9,16 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.10",
+    "@heroicons/react": "^2.2.0",
+    "antd": "^6.5.2",
+    "date-fns": "^4.4.0",
+    "graphql": "^16.14.2",
+    "graphql-request": "^7.4.0",
     "next": "16.2.12",
+    "next-navigation": "^1.0.6",
     "react": "19.2.4",
+    "react-big-calendar": "^1.20.0",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
