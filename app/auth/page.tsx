@@ -1,6 +1,9 @@
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import client from "@/utils/hygraph";
-import { GET_TODOS } from "@/utils/queries";
+import client from "@/app/utils/hygraph";
+import { GET_TODOS } from "@/app/utils/queries";
 import {
   Disclosure,
   DisclosureButton,
@@ -28,7 +31,7 @@ const navigation = [
 ];
 const userNavigation = [
   { name: "Your profile", href: "#" },
-  { name: "Sign out", href: "#" },
+  { name: "Sign out", href: "/" },
 ];
 
 function classNames(...classes) {
@@ -38,6 +41,15 @@ function classNames(...classes) {
 const todos = await client.request(GET_TODOS);
 
 export default function Example() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    console.log("user",user)
+    if (!user) {
+      router.push("/");
+    }
+  }, []);
   return (
     <div className="min-h-full">
       <Disclosure as="nav" className="bg-gray-800">
