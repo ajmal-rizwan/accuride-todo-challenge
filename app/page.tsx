@@ -2,11 +2,14 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Logo from "./assets/images/logo-b.svg";
+import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
+import Logo from "./assets/images/logo-b.svg";
+import LanguageSwitcher from "./components/LanguageSwitcher";
 
 const Home = () => {
   const router = useRouter();
+  const { t } = useTranslation("common");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,8 +32,8 @@ const Home = () => {
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await res.json() 
-    
+    const data = await res.json();
+
     if (!res.ok) {
       setError("Invalid credentials");
     } else {
@@ -46,7 +49,8 @@ const Home = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Image alt="Your Company" src={Logo} className="mx-auto h-10 w-auto" />
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight">
-          Sign in to your account
+          {/* Sign in to your account */}
+          {t("signIn")}
         </h2>
       </div>
 
@@ -54,7 +58,8 @@ const Home = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm/6 font-medium">
-              Email address
+              {/* Email address */}
+              {t("email")}
             </label>
             <div className="mt-2">
               <input
@@ -64,7 +69,7 @@ const Home = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base focus:outline-indigo-500 border-gray-300 shadow-sm "
+                className="block w-full rounded-md px-3 py-1.5 focus:outline-indigo-500 border border-gray-300 "
               />
             </div>
           </div>
@@ -72,14 +77,14 @@ const Home = () => {
           <div>
             <div className="flex items-center justify-between">
               <label htmlFor="password" className="block text-sm/6 font-medium">
-                Password
+                {t("password")}
               </label>
               <div className="text-sm">
                 <a
                   href="#"
                   className="font-semibold text-indigo-400 hover:text-indigo-300"
                 >
-                  Forgot password?
+                  {t("forgotPassword")}
                 </a>
               </div>
             </div>
@@ -91,7 +96,7 @@ const Home = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base  outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 border-gray-300 shadow-sm"
+                className="block w-full rounded-md border border-gray-300 px-3 py-1.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>
@@ -104,19 +109,23 @@ const Home = () => {
               className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
               // onClick={() => router.push("/auth")}
             >
-              {loading ? "Loading..." : " Sign in"}
+              {loading ? "Loading..." : `${t("signInBtn")}`}
             </button>
           </div>
         </form>
         <p className="mt-10 text-center text-sm/6 text-gray-400">
-          Not a member?{" "}
+          {/* Not a member?{" "} */}
+          {t("notMember")}&nbsp;
           <Link
             href="/register"
             className="font-semibold text-indigo-400 hover:text-indigo-300"
           >
-            Join now
+            {t("joinNow")}
           </Link>
         </p>
+        <div className="fixed top-4 right-4 z-50">
+          <LanguageSwitcher />
+        </div>
       </div>
     </div>
   );

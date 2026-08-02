@@ -1,9 +1,7 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import client from "@/app/utils/hygraph";
-import { GET_TODOS } from "@/app/utils/queries";
 import {
   Disclosure,
   DisclosureButton,
@@ -13,22 +11,22 @@ import {
   MenuItem,
   MenuItems,
 } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  Bars3Icon,
+  BellIcon,
+  UserCircleIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import Table from "./table";
 import MyCalendar from "./calendar";
 import Logo from "../assets/images/logo.svg";
-
-const user = {
-  name: "Tom Cook",
-  email: "tom@example.com",
-  imageUrl:
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-};
+import Modal from "./modal";
 
 const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Calendar", href: "#", current: false },
+  { name: "Dashboard", view: "dashboard" },
+  { name: "Calendar", view: "calendar" },
 ];
+
 const userNavigation = [
   { name: "Your profile", href: "#" },
   { name: "Sign out", href: "/" },
@@ -38,25 +36,85 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const todos = await client.request(GET_TODOS);
-
-export default function Example() {
+export default function Dashboard() {
   const router = useRouter();
 
+  const [showModal, setShowModal] = useState(false);
+  const [todos, setTodos] = useState([]);
+  const [item, setItem] = useState<any>(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [User, setUser] = useState<any>(null);
+  const [view, setView] = useState("dashboard");
+
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    console.log("user",user)
+    const userStr = localStorage.getItem("user");
+    const user = JSON.parse(userStr);
+    setUser(user);
+
     if (!user) {
       router.push("/");
     }
+    getTodos(user?.id);
   }, []);
+
+  const getTodos = async (userId: string) => {
+    setLoading(true);
+    fetch(`/api/todos?userId=${userId}&t=${Date.now()}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setTodos(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch todos:", err);
+        setLoading(false);
+      });
+  };
+
+  const handleEdit = (todo: any) => {
+    setItem(todo);
+    setShowModal(true);
+  };
+
+  const handleAdd = () => {
+    setItem(null);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setItem(null);
+  };
+
+  const handleDelete = async (id: string) => {
+    const res = await fetch(`/api/todos/${id}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      getTodos(User?.id);
+    }
+  };
+
+  const changeStatus = async (id: string, status: boolean) => {
+    const res = await fetch(`/api/todos/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ completed: status }),
+    });
+    if (res.ok) {
+      getTodos(User?.id);
+    }
+  };
+
   return (
     <div className="min-h-full">
       <Disclosure as="nav" className="bg-gray-800">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
-              <div className="shrink-0">
+              <div className="invert">
                 <Image alt="Your Company" src={Logo} className="size-8" />
               </div>
               <div className="hidden md:block">
@@ -64,10 +122,9 @@ export default function Example() {
                   {navigation.map((item) => (
                     <a
                       key={item.name}
-                      href={item.href}
-                      aria-current={item.current ? "page" : undefined}
+                      onClick={() => setView(item.view)}
                       className={classNames(
-                        item.current
+                        view === item.view
                           ? "bg-gray-900 text-white"
                           : "text-gray-300 hover:bg-white/5 hover:text-white",
                         "rounded-md px-3 py-2 text-sm font-medium",
@@ -95,11 +152,7 @@ export default function Example() {
                   <MenuButton className="relative flex max-w-xs items-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
                     <span className="absolute -inset-1.5" />
                     <span className="sr-only">Open user menu</span>
-                    <img
-                      alt=""
-                      src={user.imageUrl}
-                      className="size-8 rounded-full outline -outline-offset-1 outline-white/10"
-                    />
+                    <UserCircleIcon className="size-10 text-gray-400" />
                   </MenuButton>
 
                   <MenuItems
@@ -144,10 +197,9 @@ export default function Example() {
               <DisclosureButton
                 key={item.name}
                 as="a"
-                href={item.href}
-                aria-current={item.current ? "page" : undefined}
+                onClick={() => setView(item.view)}
                 className={classNames(
-                  item.current
+                  view === item.view
                     ? "bg-gray-900 text-white"
                     : "text-gray-300 hover:bg-white/5 hover:text-white",
                   "block rounded-md px-3 py-2 text-base font-medium",
@@ -159,19 +211,14 @@ export default function Example() {
           </div>
           <div className="border-t border-white/10 pt-4 pb-3">
             <div className="flex items-center px-5">
-              <div className="shrink-0">
-                <img
-                  alt=""
-                  src={user.imageUrl}
-                  className="size-10 rounded-full outline -outline-offset-1 outline-white/10"
-                />
-              </div>
+              <UserCircleIcon className="size-2" />
+
               <div className="ml-3">
                 <div className="text-base/5 font-medium text-white">
-                  {user.name}
+                  {User?.email}
                 </div>
                 <div className="text-sm font-medium text-gray-400">
-                  {user.email}
+                  {User?.email}
                 </div>
               </div>
               <button
@@ -200,17 +247,40 @@ export default function Example() {
       </Disclosure>
 
       <header className="relative bg-white shadow-sm">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex items-center justify-between">
           <h1 className="text-3xl font-bold tracking-tight text-gray-900">
             Dashboard
           </h1>
+          <button
+            onClick={() => handleAdd()}
+            className="rounded-md bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400"
+          >
+            + Add Todo
+          </button>
         </div>
       </header>
       <main>
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          {/* <Table todos={todos.todoLists} /> */}
-          <MyCalendar todos={todos.todoLists} />
+          {view === "dashboard" ? (
+            <Table
+              todos={todos}
+              loading={loading}
+              onDelete={handleDelete}
+              changeStatus={changeStatus}
+              onEdit={handleEdit}
+            />
+          ) : (
+            <MyCalendar todos={todos} />
+          )}
         </div>
+        {showModal && (
+          <Modal
+            open={showModal}
+            item={item}
+            onClose={() => handleCloseModal()}
+            onSuccess={() => getTodos(User?.id)}
+          />
+        )}
       </main>
     </div>
   );

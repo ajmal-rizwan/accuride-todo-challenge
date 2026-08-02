@@ -1,13 +1,14 @@
 "use client";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
 import Logo from "../assets/images/logo-b.svg";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { CREATE_USER } from "../utils/queries";
-import client from "../utils/hygraph";
+import LanguageSwitcher from "../components/LanguageSwitcher";
 
 const Register = () => {
   const router = useRouter();
+  const { t } = useTranslation("common");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -39,6 +40,12 @@ const Register = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
+    if (!res.ok) {
+      setError("Something went wrong....!");
+    } else {
+      alert("User registered successfully. Please login.");
+      router.push("/");
+    }
 
     console.log("data", res);
   };
@@ -55,11 +62,8 @@ const Register = () => {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm/6 font-medium "
-            >
-              Email address
+            <label htmlFor="email" className="block text-sm/6 font-medium ">
+              {t("email")}
             </label>
             <div className="mt-2">
               <input
@@ -70,7 +74,7 @@ const Register = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
-                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base  outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                className="block w-full rounded-md px-3 py-1.5 focus:outline-indigo-500 border border-gray-300 "
               />
             </div>
           </div>
@@ -81,7 +85,7 @@ const Register = () => {
                 htmlFor="password"
                 className="block text-sm/6 font-medium "
               >
-                Password
+                {t("password")}
               </label>
             </div>
             <div className="mt-2">
@@ -92,7 +96,7 @@ const Register = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base  outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                className="block w-full rounded-md px-3 py-1.5 focus:outline-indigo-500 border border-gray-300 "
               />
             </div>
           </div>
@@ -103,7 +107,7 @@ const Register = () => {
                 htmlFor="password"
                 className="block text-sm/6 font-medium "
               >
-                Confirm Password
+                {t("confirmPassword")}
               </label>
             </div>
             <div className="mt-2">
@@ -114,30 +118,35 @@ const Register = () => {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base  outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                className="block w-full rounded-md px-3 py-1.5 focus:outline-indigo-500 border border-gray-300 "
               />
             </div>
           </div>
-
+          {error && (
+            <p className="mb-4 text-center text-red-400 text-sm">{error}</p>
+          )}
           <div>
             <button
               type="submit"
               disabled={loading}
               className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white  hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
             >
-              {loading ? "Loading..." : "Register"}{" "}
+              {loading ? "Loading..." : `${t("registerBtn")}`}
             </button>
           </div>
         </form>
         <p className="mt-10 text-center text-sm/6 text-gray-400">
-          Already a member?{" "}
+          {t("alreadyMember")}&nbsp;
           <a
             href="/"
             className="font-semibold text-indigo-400 hover:text-indigo-300"
           >
-            Sign in
+            {t("signInLink")}
           </a>
         </p>
+      </div>
+      <div className="fixed top-4 right-4">
+        <LanguageSwitcher />
       </div>
     </div>
   );
