@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
         hostname: '**.graphassets.com',
       },
      ]
-    },};
+    },
+   reactStrictMode: false,
+  };
 
 export default nextConfig;
