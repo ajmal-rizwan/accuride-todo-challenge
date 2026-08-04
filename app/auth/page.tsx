@@ -63,7 +63,7 @@ export default function Dashboard() {
 
   const getTodos = async (userId: string) => {
     setLoading(true);
-    fetch(`/api/todos?userId=${userId}&t=${Date.now()}`)
+    fetch(`/api/todos?userId=${userId}`)
       .then((res) => res.json())
       .then((data) => {
         setTodos(data);
@@ -96,6 +96,7 @@ export default function Dashboard() {
     });
 
     if (res.ok) {
+      alert("Deleted Successfully")
       getTodos(User?.id);
     }
   };
@@ -107,6 +108,7 @@ export default function Dashboard() {
       body: JSON.stringify({ completed: status }),
     });
     if (res.ok) {
+      alert("Status Changed Successfully")
       getTodos(User?.id);
     }
   };

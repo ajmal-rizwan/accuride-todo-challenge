@@ -13,6 +13,7 @@ import {
   ArrowUturnLeftIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslation } from "react-i18next";
+import Loader from "../components/Loader";
 
 function Table({
   todos,
@@ -34,7 +35,7 @@ function Table({
         <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
           <div className="overflow-hidden shadow ring-1 ring-gray-200 rounded-lg">
             {loading ? (
-              <>Loading...</>
+              <Loader />
             ) : (
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -115,11 +116,6 @@ function Table({
                               <ArrowUturnLeftIcon className="h-5 w-5" />
                             </button>
                           )}
-
-                          {/* <button className="text-green-600 hover:text-green-900 font-medium">
-                                  {!todo.completed ?( <CheckCircleIcon className="h-5 w-5" /> ) : 
-                                  ( <XCircleIcon className="h-5 w-5 text-gray-400" /> )}
-                            </button> */}
                         </div>
                       </td>
                     </tr>

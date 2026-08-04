@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       password: hashedPassword,
     })
 
-    // Publish user so it appears in queries
+    // Publish user
     // await client.request(PUBLISH_USER, { id: data.createAppUser.id })
 
     return NextResponse.json({ message: 'User created successfully' })

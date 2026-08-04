@@ -13,7 +13,6 @@ interface Todo {
 }
 
 const MyCalendar = ({ todos }: { todos: Todo[] }) => {
-  const [selectedDate, setSelectedDate] = useState();
   const [selectedEvent, setSelectedEvent] = useState();
 
   const events = todos
@@ -27,13 +26,9 @@ const MyCalendar = ({ todos }: { todos: Todo[] }) => {
     }));
 
   const handleSelectEvent = (event: any) => {
-    console.log("Selected event:", event);
     setSelectedEvent(event);
   };
 
-  const handleSelectSlot = (slot: any) => {
-    console.log("Selected slot:", slot);
-  };
 
 
   return (
@@ -46,7 +41,6 @@ const MyCalendar = ({ todos }: { todos: Todo[] }) => {
         style={{ height: 500 }}
         selectable
         onSelectEvent={handleSelectEvent}
-        onSelectSlot={handleSelectSlot}
       />
       {selectedEvent && (
         <div className="mt-4 rounded-lg ring-1 ring-gray-200 p-4">
