@@ -43,11 +43,8 @@ export default function Modal(props: {
       }),
     });
 
-    console.log("res", res);
-
     if (res.ok) {
       const newTodo = await res.json();
-      //   onAdd(newTodo)
       setTitle("");
       setDescription("");
       setDueDate("");
@@ -61,20 +58,8 @@ export default function Modal(props: {
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (props.item) {
-      setTitle(props.item.title || "");
-      setDescription(props.item.description || "");
-      setDueDate(props.item.dueDate || "");
-    } else {
-      setTitle("");
-      setDescription("");
-      setDueDate("");
-    }
-  }, [props.item]);
 
   return (
-    <div>
       <Dialog
         open={props.open}
         onClose={props.onClose}
@@ -164,6 +149,5 @@ export default function Modal(props: {
           </div>
         </div>
       </Dialog>
-    </div>
   );
 }

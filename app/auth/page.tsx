@@ -17,10 +17,12 @@ import {
   UserCircleIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
+import { useTranslation } from "react-i18next";
 import Table from "./table";
 import MyCalendar from "./calendar";
 import Logo from "../assets/images/logo.svg";
 import Modal from "./modal";
+import LanguageSwitcher from "../components/LanguageSwitcher";
 
 const navigation = [
   { name: "Dashboard", view: "dashboard" },
@@ -38,6 +40,7 @@ function classNames(...classes) {
 
 export default function Dashboard() {
   const router = useRouter();
+  const { t } = useTranslation("common");
 
   const [showModal, setShowModal] = useState(false);
   const [todos, setTodos] = useState([]);
@@ -138,14 +141,15 @@ export default function Dashboard() {
             </div>
             <div className="hidden md:block">
               <div className="ml-4 flex items-center md:ml-6">
-                <button
+                {/* <button
                   type="button"
                   className="relative rounded-full p-1 text-gray-400 hover:text-white focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500"
                 >
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">View notifications</span>
                   <BellIcon aria-hidden="true" className="size-6" />
-                </button>
+                </button> */}
+                <LanguageSwitcher />
 
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
@@ -249,13 +253,13 @@ export default function Dashboard() {
       <header className="relative bg-white shadow-sm">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex items-center justify-between">
           <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-            Dashboard
+            {t("dashboard")}
           </h1>
           <button
             onClick={() => handleAdd()}
             className="rounded-md bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400"
           >
-            + Add Todo
+           {t("addTodo")}
           </button>
         </div>
       </header>

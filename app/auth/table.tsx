@@ -12,6 +12,7 @@ import {
   CheckCircleIcon,
   ArrowUturnLeftIcon,
 } from "@heroicons/react/24/outline";
+import { useTranslation } from "react-i18next";
 
 function Table({
   todos,
@@ -26,6 +27,7 @@ function Table({
   onDelete: (id: string) => void;
   changeStatus: (id: string, status: boolean) => void;
 }) {
+  const { t } = useTranslation("common");
   return (
     <div className="mt-8 flow-root">
       <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -38,19 +40,19 @@ function Table({
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
-                      Title
+                      {t("title")}
                     </th>
                     <th className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Description
+                      {t("description")}
                     </th>
                     <th className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Due Date
+                      {t("dueDate")}
                     </th>
                     <th className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Status
+                      {t("status")}
                     </th>
                     <th className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Actions
+                      {t("actions")}
                     </th>
                   </tr>
                 </thead>

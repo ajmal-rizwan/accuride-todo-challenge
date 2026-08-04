@@ -14,18 +14,19 @@ export default function LanguageSwitcher() {
 
   const { i18n } = useTranslation();
   const [open, setOpen] = useState(false);
+
   return (
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1 px-2 py-1 text-sm hover:text-white"
+        className="flex items-center gap-1 px-2 py-1 text-sm text-gray-400"
       >
-        {langs.find((l) => l.code === i18n.language)?.flag}{" "}
+        {langs.find((l) => l.code === i18n.language)?.flag}&nbsp;
         {i18n.language.toUpperCase()}
         <ChevronDownIcon className="h-3 w-3 ml-1" />
       </button>
       {open && (
-        <div className="absolute right-0 mt-1 w-28 rounded-md bg-white shadow-lg z-50">
+        <div className="absolute right-0 mt-1 w-28 rounded-md bg-white z-50">
           {langs.map((l) => (
             <button
               key={l.code}
